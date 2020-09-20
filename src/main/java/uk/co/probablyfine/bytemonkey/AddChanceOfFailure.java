@@ -13,6 +13,7 @@ import jdk.internal.org.objectweb.asm.tree.MethodInsnNode;
 public class AddChanceOfFailure {
 
     private static final Random random = new Random();
+    private static boolean onlyOnce = true;
 
     public InsnList apply(InsnList newInstructions, double chanceOfFailure) {
         final InsnList list = new InsnList();
@@ -44,6 +45,13 @@ public class AddChanceOfFailure {
     }
 
     public static boolean shouldActivate(double chanceOfFailure) {
-        return random.nextDouble() < chanceOfFailure;
+        final boolean flag = random.nextDouble() < chanceOfFailure;
+        if(flag && onlyOnce){
+            System.err.println("BYTEMONKEY FAULT INJECTOR");
+            System.err.println("The variable{onlyOnce} is " + onlyOnce);
+            onlyOnce = false;
+            System.err.println("A fault occured at " + System.nanoTime());
+        } 
+        return flag && onlyOnce;
     }
 }
